@@ -1,7 +1,13 @@
-function Input({ type, placeholder }) {
-  return (
-    <input type={type} placeholder={placeholder} className='p-2 m-2 bg-transparent border-2 border-white rounded-md focus:outline-none focus:border-green-300' />
-  )
-}
+const Input = ({ name, type, placeholder, ...rest }) => {
+    return (
+        <input 
+            name={name}
+            type={type} 
+            placeholder={placeholder}
+            className="border p-2 rounded bg-transparent text-white" 
+            {...rest}
+        />
+    );
+};
 
-export default Input
+export default Input;
