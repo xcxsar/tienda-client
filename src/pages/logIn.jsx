@@ -16,7 +16,7 @@ function Login() {
         const email = formData.get('email');
         const password = formData.get('password');
         login({ email, password }, {
-                onSuccess: () =>  navigate('/dashboard'),
+                onSuccess: () =>  navigate('/sales'),
                 onError: (error) => {
                     const message = error.response?.data?.message || error.message;
                     alert('Error al iniciar sesión: ' + message);
