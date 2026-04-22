@@ -3,7 +3,7 @@ const Button = ({ text, type = "button", disabled, ...rest }) => {
         <button 
             type={type} // Ensure this is "submit" for the form
             disabled={disabled}
-            className="bg-white text-black py-2 px-4 rounded hover:bg-gray-200 disabled:opacity-50"
+            className="w-full h-12 bg-black text-white text-xs py-2 rounded-md font-medium active:scale-95 transition-transform cursor-pointer"
             {...rest}
         >
             {text}
