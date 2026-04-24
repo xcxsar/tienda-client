@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useCart } from "../../hooks/useCart";
 import { useSales } from "../../hooks/useSales";
+import { usePrint } from "../../hooks/usePrint";
 
 import Header from '../atomic/header.jsx';
 import PriceTag from '../atomic/priceTag.jsx';
@@ -7,8 +9,12 @@ import Button from '../atomic/button.jsx';
 import MiniProductCard from './miniProductCard.jsx';
 
 function Ticket() {
+    const [showPrintModal, setShowPrintModal] = useState(false);
+    const [currentSaleId, setCurrentSaleId] = useState(null);
+
     const { order, calculateTotal, clearCart } = useCart();
     const { createSale, isCreating } = useSales();
+    const { print } = usePrint();
 
     const subtotal = calculateTotal();
     const tax = subtotal * 0.16;
@@ -24,9 +30,12 @@ function Ticket() {
         }));
 
         createSale(payload, {
-            onSuccess: () => {
-                alert("¡Venta exitosa!");
+            onSuccess: (response) => {
                 clearCart();
+                // Extract the sale ID from your API response (adjust path if needed)
+                const id = response?.data?.id || response?.id;
+                setCurrentSaleId(id);
+                setShowPrintModal(true);
             },
             onError: (err) => {
                 const errorMessage = err.response?.data?.message || "Error al procesar la venta";
@@ -36,6 +45,7 @@ function Ticket() {
     };
 
     return (
+        <>
         <div className="flex flex-col h-full w-70 p-2">
             <div className='p-2'>
                 <Header text='Pedido #' />
@@ -76,6 +86,32 @@ function Ticket() {
                 />
             </div>
         </div>
+
+        {showPrintModal && (
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-lg p-6 w-80 flex flex-col gap-4 shadow-xl">
+                    <p className="text-center text-lg font-semibold text-gray-800">¿Desea imprimir su recibo?</p>
+                    <div className="flex justify-center gap-4 mt-2">
+                        <button 
+                            className="bg-[#00BE64] text-white px-6 py-2 rounded-md font-medium hover:bg-opacity-90 transition-colors"
+                            onClick={() => {
+                                if (currentSaleId) print(currentSaleId);
+                                setShowPrintModal(false);
+                            }}
+                        >
+                            Sí
+                        </button>
+                        <button 
+                            className="bg-gray-200 text-gray-800 px-6 py-2 rounded-md font-medium hover:bg-gray-300 transition-colors"
+                            onClick={() => setShowPrintModal(false)}
+                        >
+                            No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }
 
