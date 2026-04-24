@@ -2,7 +2,7 @@ function MiniProductCard({ urlImg, name, price, quantity }) {
     return (
         <div className='flex flex-row items-center bg-white w-full gap-3 py-2 border-b border-gray-50'>
             <img 
-                src={urlImg} 
+                src={import.meta.env.VITE_API_URL + '/assets/images/' + urlImg} 
                 alt={name} 
                 className='object-cover rounded w-10 h-10 border border-gray-100' 
             />

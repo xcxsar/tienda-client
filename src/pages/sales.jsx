@@ -5,16 +5,20 @@ import { useCategories } from "../hooks/useCategories";
 import Header from '../components/atomic/header.jsx';
 import ProductCard from '../components/composite/productCard.jsx';
 import Ticket from '../components/composite/ticket.jsx';
+import { useCart } from '../hooks/useCart.jsx';
 
 function Sales() {
     const { products, isLoading: loadingProducts, isError: errorProducts } = useProducts();
     const { categories, isLoading: loadingCats, isError: errorCats } = useCategories();
-    
+    const { order } = useCart();
+
     const [selectedCategory, setSelectedCategory] = useState('all');
 
-    const filteredProducts = products?.filter(product => 
-        selectedCategory === 'all' || product.category?.name === selectedCategory
-    ) || [];
+    const filteredProducts = products?.filter(product => {
+        if (selectedCategory === 'all') return true;
+        
+        return product.categoryId === Number(selectedCategory);
+    }) || [];
 
     if (loadingProducts || loadingCats) {
         return <div className="h-screen flex items-center justify-center">Cargando datos...</div>;
@@ -34,14 +38,15 @@ function Sales() {
 
                 <div className='h-8 mx-4 flex items-center gap-4'>
                     <p className='text-sm font-semibold'>Filtrar por:</p>
-                    <select 
+                   <select 
                         className='text-sm bg-transparent border-b border-gray-300 focus:outline-none cursor-pointer'
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
                         <option value='all'>Todas las categorías</option>
                         {categories?.map(cat => (
-                            <option key={cat.id} value={cat.name}>
+                            // Use ID for the value, keep Name for the label
+                            <option key={cat.id} value={cat.id}>
                                 {cat.name}
                             </option>
                         ))}
@@ -49,9 +54,18 @@ function Sales() {
                 </div>
 
                 <div className='overflow-y-auto flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-4'>
-                    {filteredProducts.map(product => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
+                    {filteredProducts.map(product => {
+                        const cartItem = order.find(item => item.id === product.id);
+                        const currentQuantity = cartItem ? cartItem.quantity : 0;
+
+                        return (
+                            <ProductCard 
+                                key={product.id} 
+                                product={product} 
+                                currentQuantity={currentQuantity}
+                            />
+                        );
+                    })}
                 </div>
             </div>
 
