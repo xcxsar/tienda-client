@@ -95,7 +95,7 @@ function Ticket() {
                         <button 
                             className="bg-[#00BE64] text-white px-6 py-2 rounded-md font-medium hover:bg-opacity-90 transition-colors"
                             onClick={() => {
-                                if (currentSaleId) print(currentSaleId);
+                                if (currentSaleId) print();
                                 setShowPrintModal(false);
                             }}
                         >
