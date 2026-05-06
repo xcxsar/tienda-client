@@ -3,7 +3,7 @@ import * as api from '../services/printService.js';
 
 export const usePrint = () => {
     const printMutation = useMutation({
-        mutationFn: (documentId) => api.printDocument(documentId),
+        mutationFn: () => api.printDocument(),
     });
     
     return {
