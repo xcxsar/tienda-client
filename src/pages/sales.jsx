@@ -2,12 +2,18 @@ import { useState } from 'react';
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
 
+// 1. IMPORTAMOS EL NUEVO HOOK PARA WEBSOCKETS
+import { useRealTimeSync } from "../hooks/useRealTimeSync.js";
+
 import Header from '../components/atomic/header.jsx';
 import ProductCard from '../components/composite/productCard.jsx';
 import Ticket from '../components/composite/ticket.jsx';
 import { useCart } from '../hooks/useCart.jsx';
 
 function Sales() {
+    // 2. ACTIVAMOS LA ESCUCHA EN TIEMPO REAL AL MONTAR EL COMPONENTE
+    useRealTimeSync();
+
     const { products, isLoading: loadingProducts, isError: errorProducts } = useProducts();
     const { categories, isLoading: loadingCats, isError: errorCats } = useCategories();
     const { order } = useCart();
